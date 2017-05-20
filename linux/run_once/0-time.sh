@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+set -e
 
 
 sudo timedatectl set-timezone America/New_York

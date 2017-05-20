@@ -4,36 +4,39 @@
 
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "ubuntu/zesty64"
+    config.vm.box = "ubuntu/xenial64"
 
-    config.vm.provider "virtualbox" do |vb|
-        vb.gui = true
-        [
-            ["--memory", 4096],
-            ["--cpus", 2]
-        ].each do |setting, value|
-            vb.customize ["modifyvm", :id, setting, value]
+    # config.vm.network "public_network"
+
+    vbox_settings = [
+        ["--name", "holodeck"],
+        ["--memory", 4096],
+        ["--cpus", 2],
+        ["--vram", 64]
+    ]
+
+    config.vm.provider "virtualbox" do |vbox|
+        vbox.gui = false
+        vbox.linked_clone = true
+
+        vbox_settings.each do |setting, value|
+            vbox.customize ["modifyvm", :id, setting, value]
         end
+
+        disk = ".vagrant/extra-hdd.vdi"
+        capacity = 100 * 1024  # megabytes
+        vbox.customize ["createmedium", "disk", "--filename", disk, "--size", capacity] unless File.exists? disk
+        vbox.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 2, "--device", 0, "--type", "hdd", "--medium", disk]
     end
 
-    # config.vm.provider "vmware_fusion" do |vmware|
-    #     # many of the parameters for vmware fusion are undocumented so you'll need to look in the .vmx file and experiment
-    #     # ref: https://thornelabs.net/2013/09/28/customizing-vagrant-vmware-fusion-virtual-machines-with-vmx-parameters.html
-    #     vmware.gui = true
-    #     [
-    #         ["memsize", 4096],
-    #         ["numvcpus", 2]
-    #     ].each do |setting, value|
-    #         vmware.vmx[setting] = value
-    #     end
-    # end
+    config.vm.provision "docker"
 
     Dir.glob("run_once/*.sh").sort.each do |script|
-        config.vm.provision "shell", path: script, privileged: false
+        config.vm.provision "shell", path: script, name: script, privileged: false
     end
 
     Dir.glob("run_always/*.sh").sort.each do |script|
-        config.vm.provision "shell", path: script, privileged: false, run: "always"
+        config.vm.provision "shell", path: script, name: script, privileged: false, run: "always"
     end
 
 end
