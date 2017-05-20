@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+set -e
 
 
 sudo systemsetup -settimezone America/New_York

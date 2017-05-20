@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+
+    host_os = RbConfig::CONFIG["host_os"]
+
+    config.vbguest.auto_update = false
+
+    config.vm.box = "jhcook/macos-sierra"  # this box only works with virtualbox
+    config.vm.guest = "darwin"
+
+    # config.vm.network "public_network"
+
+    machine_name = "holodeck"
+    machine_memory = 4096
+    machine_cpus = 2
+
+    vbox_settings = [
+        ["--name", machine_name],
+        ["--memory", machine_memory],
+        ["--cpus", machine_cpus],
+        ["--paravirtprovider", "default"]
+    ]
+
+    vmware_settings = [
+        ["displayname", machine_name],
+        ["memsize", machine_memory],
+        ["numvcpus", machine_cpus],
+        ["vhv.enable", "TRUE"],  # required by docker
+        ["sound.present", "TRUE"],  # add a sound card to the VM
+        ["sound.startconnected", "TRUE"],  # enable the sound card
+        ["sound.virtualdev", "hdaudio"]  # sound card device type
+    ]
+
+    config.vm.provider "virtualbox" do |vbox|
+        vbox.gui = true
+        vbox.linked_clone = true
+
+        vbox_settings.each do |setting, value|
+            vbox.customize ["modifyvm", :id, setting, value]
+        end
+    end
+
+    config.vm.provider "vmware_fusion" do |vmware|
+        vmware.gui = true
+
+        # many of the parameters for vmware fusion are undocumented so you'll need to look in the .vmx file and experiment
+        # ref: https://thornelabs.net/2013/09/28/customizing-vagrant-vmware-fusion-virtual-machines-with-vmx-parameters.html
+        vmware_settings.each do |setting, value|
+            vmware.vmx[setting] = value
+        end
+    end
+
+    Dir.glob("run_once/*.sh").sort.each do |script|
+        config.vm.provision "shell", path: script, name: script, privileged: false
+    end
+
+    Dir.glob("run_always/*.sh").sort.each do |script|
+        config.vm.provision "shell", path: script, name: script, privileged: false, run: "always"
+    end
+
+end
