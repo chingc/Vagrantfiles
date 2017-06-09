@@ -26,7 +26,6 @@ else
 
     echo "LABEL=${LABEL} ${MOUNT} ext4 defaults 0 0" | sudo tee -a /etc/fstab
     mkdir "${MOUNT}"
-
     sudo mount -a
 
     echo "${DEVICE} is ready"
