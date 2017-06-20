@@ -1,7 +1,7 @@
 Write-Output "Adjusting timezone..."
 Set-TimeZone -Name "Eastern Standard Time"
 
-if (Get-Command choco -ea SilentlyContinue) {
+if (Get-Command choco -ErrorAction SilentlyContinue) {
     Write-Output "Upgrading Chocolatey..."
     choco upgrade -y chocolatey
 } else {
@@ -15,6 +15,16 @@ choco install -y `
     docker-for-windows `
     git `
     googlechrome `
+    sysinternals `
     visualstudiocode
 
-Remove-Item "C:\Users\IEUser\Desktop\RUN AS ADMIN.ps1"
+Write-Output "`nEnabling auto logon..."
+autologon "IEUser" "WORKGROUP" "Passw0rd!"
+
+Write-Output "Installing VirtualBox Guest Additions..."
+Mount-DiskImage -ImagePath (Get-ChildItem "..\Downloads\VBoxGuestAdditions.iso").FullName
+D:\VBoxWindowsAdditions.exe /S
+Start-Sleep -s 30
+
+Write-Output "`nA reboot is require."
+Remove-Item ".\RUN AS ADMIN.ps1"

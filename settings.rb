@@ -32,6 +32,7 @@ module Settings
         ["--audio", DEVICE[:audio]],
         ["--audiocontroller", "hda"],
         ["--clipboard", "bidirectional"],
+        ["--draganddrop", "bidirectional"],
         ["--macaddress1", "auto"]  # randomize mac address every boot
     ]
 

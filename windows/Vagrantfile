@@ -26,7 +26,15 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    config.vm.provision "file", source: "provision.ps1", destination: "C:/Users/IEUser/Desktop/RUN AS ADMIN.ps1"
-    config.vm.provision "file", source: "powershell.lnk", destination: "C:/Users/IEUser/Desktop/Windows PowerShell.lnk"
+    guest_additions_iso = [
+        "/Applications/VirtualBox.app",
+        "C:/Program Files/Oracle/VirtualBox"
+    ].map{ |vbox_dir| Dir.glob("#{vbox_dir}/**/VBoxGuestAdditions.iso") }.flatten.pop
+
+    home = "C:/Users/IEUser"
+
+    config.vm.provision "file", source: guest_additions_iso, destination: "#{home}/Downloads/VBoxGuestAdditions.iso"
+    config.vm.provision "file", source: "provision.ps1", destination: "#{home}/Desktop/RUN AS ADMIN.ps1"
+    config.vm.provision "file", source: "powershell.lnk", destination: "#{home}/Desktop/Windows PowerShell.lnk"
 
 end
