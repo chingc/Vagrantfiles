@@ -11,6 +11,7 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
 
 Write-Output "Installing Chocolatey packages..."
 choco install -y `
+    7zip `
     curl `
     docker-for-windows `
     git `
