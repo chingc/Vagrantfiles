@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
             vbox.customize ["modifyvm", :id, setting, value]
         end
 
-        disk = ".vagrant/extra-hdd.vdi"
+        disk = ".vagrant/custom-hdd.vdi"
         capacity = 100 * 1024  # megabytes
         vbox.customize ["createmedium", "disk", "--filename", disk, "--size", capacity] unless File.exists? disk
         vbox.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 2, "--device", 0, "--type", "hdd", "--medium", disk]
