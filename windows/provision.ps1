@@ -1,3 +1,5 @@
+#Requires -RunAsAdministrator
+
 Write-Output "Adjusting timezone..."
 Set-TimeZone -Name "Eastern Standard Time"
 
