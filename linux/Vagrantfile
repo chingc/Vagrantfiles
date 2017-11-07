@@ -6,14 +6,8 @@ require_relative "../settings"
 
 Vagrant.configure("2") do |config|
 
-    config.vbguest.auto_update = true
-
     config.vm.box = "ubuntu/xenial64"
-
-    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    # config.vm.network "public_network"
-
-    # config.vm.synced_folder "source", "dest"
+    config.vm.hostname = Settings::NAME
 
     config.vm.provider "virtualbox" do |vbox|
         vbox.gui = false
@@ -28,6 +22,11 @@ Vagrant.configure("2") do |config|
         vbox.customize ["createmedium", "disk", "--filename", disk, "--size", capacity] unless File.exists? disk
         vbox.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 2, "--device", 0, "--type", "hdd", "--medium", disk]
     end
+
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    # config.vm.network "public_network"
+
+    # config.vm.synced_folder "source", "dest"
 
     config.vm.provision "shell", inline: "apt-get update"
 

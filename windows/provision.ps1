@@ -24,6 +24,9 @@ choco install -y `
 Write-Output "`nEnabling auto logon..."
 autologon "IEUser" "WORKGROUP" "Passw0rd!"
 
+Write-Output "Updating hostname..."
+Rename-Computer -NewName <HOSTNAME>
+
 Write-Output "Installing VirtualBox Guest Additions..."
 Mount-DiskImage -ImagePath (Get-ChildItem "..\Downloads\VBoxGuestAdditions.iso").FullName
 D:\VBoxWindowsAdditions.exe /S

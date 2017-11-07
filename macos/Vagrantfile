@@ -6,15 +6,9 @@ require_relative "../settings"
 
 Vagrant.configure("2") do |config|
 
-    config.vbguest.auto_update = false
-
     config.vm.box = "jhcook/macos-sierra"  # this box only works with virtualbox
     config.vm.guest = "darwin"
-
-    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    # config.vm.network "public_network"
-
-    # config.vm.synced_folder "source", "dest"
+    config.vm.hostname = Settings::NAME
 
     config.vm.provider "virtualbox" do |vbox|
         vbox.gui = true
@@ -32,6 +26,11 @@ Vagrant.configure("2") do |config|
     #         vmware.vmx[setting] = value
     #     end
     # end
+
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    # config.vm.network "public_network"
+
+    # config.vm.synced_folder "source", "dest"
 
     Dir.glob("run_once/*.sh").sort.each do |script|
         config.vm.provision "shell", path: script, name: script, privileged: false

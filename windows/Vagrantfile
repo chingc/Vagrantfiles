@@ -1,24 +1,16 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require "tempfile"
+
 require_relative "../settings"
 
 
 Vagrant.configure("2") do |config|
 
-    config.vbguest.auto_update = false
-
     config.vm.box = "win10-msedge-20170320"  # https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/
     config.vm.guest = "windows"
-
-    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    # config.vm.network "public_network"
-
-    # config.vm.synced_folder "source", "C:/dest"
-
-    config.ssh.username = "IEUser"
-    config.ssh.password = "Passw0rd!"
-    config.ssh.insert_key = false
+    config.vm.hostname = Settings::NAME
 
     config.vm.provider "virtualbox" do |vbox|
         vbox.gui = true
@@ -29,6 +21,19 @@ Vagrant.configure("2") do |config|
         end
     end
 
+    # config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    # config.vm.network "public_network"
+
+    # config.vm.synced_folder "source", "C:/dest"
+
+    config.ssh.username = "IEUser"
+    config.ssh.password = "Passw0rd!"
+    config.ssh.insert_key = false
+
+    edited_provision = Tempfile.new("edited_provision", ".")
+    edited_provision.write(IO.read("provision.ps1").gsub!(/<HOSTNAME>/, config.vm.hostname))
+    edited_provision.close
+
     guest_additions_iso = [
         "/Applications/VirtualBox.app",
         "C:/Program Files/Oracle/VirtualBox"
@@ -36,8 +41,8 @@ Vagrant.configure("2") do |config|
 
     home = "C:/Users/IEUser"
 
+    config.vm.provision "file", source: edited_provision.path, destination: "#{home}/Desktop/RUN AS ADMIN.ps1"
     config.vm.provision "file", source: guest_additions_iso, destination: "#{home}/Downloads/VBoxGuestAdditions.iso"
-    config.vm.provision "file", source: "provision.ps1", destination: "#{home}/Desktop/RUN AS ADMIN.ps1"
     config.vm.provision "file", source: "powershell.lnk", destination: "#{home}/Desktop/Windows PowerShell.lnk"
 
 end
