@@ -1,8 +1,5 @@
 #Requires -RunAsAdministrator
 
-Write-Output "Adjusting timezone..."
-Set-TimeZone -Name "Eastern Standard Time"
-
 if (Get-Command choco -ErrorAction SilentlyContinue) {
     Write-Output "Upgrading Chocolatey..."
     choco upgrade -y chocolatey
@@ -11,7 +8,7 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
-Write-Output "Installing Chocolatey packages..."
+Write-Output "`nInstalling Chocolatey packages..."
 choco install -y `
     7zip `
     curl `
@@ -24,13 +21,8 @@ choco install -y `
 Write-Output "`nEnabling auto logon..."
 autologon "IEUser" "WORKGROUP" "Passw0rd!"
 
-Write-Output "Updating hostname..."
-Rename-Computer -NewName <HOSTNAME>
+Write-Output "`nAdjusting timezone..."
+Set-TimeZone -Name "Eastern Standard Time"
 
-Write-Output "Installing VirtualBox Guest Additions..."
-Mount-DiskImage -ImagePath (Get-ChildItem "..\Downloads\VBoxGuestAdditions.iso").FullName
-D:\VBoxWindowsAdditions.exe /S
-Start-Sleep -s 30
-
-Write-Output "`nA reboot is require."
+Write-Output "`nDone."
 Remove-Item ".\RUN AS ADMIN.ps1"
