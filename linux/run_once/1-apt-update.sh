@@ -2,4 +2,4 @@
 set -e
 
 
-brew install git
+sudo apt-get update
