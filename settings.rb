@@ -21,7 +21,7 @@ module Settings
             audio: "dsound"
         }
     else
-        raise "Don't know what to do for '#{HOST_OS}'"
+        raise "#{File.basename(__FILE__)}: Don't know which audio device to use for '#{HOST_OS}'"
     end
 
     VBOX = [
