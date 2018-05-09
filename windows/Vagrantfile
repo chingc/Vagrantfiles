@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
     # For `vagrant up` to succeed, open an Administrative PowerShell and run these commands:
     # 1. sc.exe config "WinRM" start= auto  # Change "Startup type" from "Automatic (Delayed Start)" to "Automatic"
-    # 2. Enable-PSRemoting -SkipNetworkProfileCheck  # Allow Vagrant to successfully communicate with the box
+    # 2. Enable-PSRemoting -SkipNetworkProfileCheck -Force  # Allow Vagrant to successfully communicate with the box
     config.vm.communicator = "winrm"
     config.winrm.username = "IEUser"
     config.winrm.password = "Passw0rd!"
@@ -43,5 +43,10 @@ Vagrant.configure("2") do |config|
     Dir.glob("run_always/*.ps1").sort.each do |script|
         config.vm.provision "shell", path: script, name: script, run: "always"
     end
+
+    config.vm.post_up_message = <<~MSG
+        - Resolution too low? `VBoxManage controlvm "#{Settings::NAME}" setvideomodehint 1440 900 32`
+        - Just provisioned? `vagrant reload` recommended
+    MSG
 
 end

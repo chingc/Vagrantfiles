@@ -36,4 +36,8 @@ Vagrant.configure("2") do |config|
         config.vm.provision "shell", path: script, name: script, privileged: false, run: "always"
     end
 
+    config.vm.post_up_message = <<~MSG
+        - Just provisioned? `vagrant reload` recommended
+    MSG
+
 end
