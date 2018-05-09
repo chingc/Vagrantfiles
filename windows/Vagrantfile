@@ -20,8 +20,8 @@ Vagrant.configure("2") do |config|
     end
 
     # For `vagrant up` to succeed, open an Administrative PowerShell and run these commands:
-    # 1. sc.exe config "WinRM" start= auto
-    # 2. Enable-PSRemoting -SkipNetworkProfileCheck
+    # 1. sc.exe config "WinRM" start= auto  # Change "Startup type" from "Automatic (Delayed Start)" to "Automatic"
+    # 2. Enable-PSRemoting -SkipNetworkProfileCheck  # Allow Vagrant to successfully communicate with the box
     config.vm.communicator = "winrm"
     config.winrm.username = "IEUser"
     config.winrm.password = "Passw0rd!"
@@ -36,7 +36,12 @@ Vagrant.configure("2") do |config|
 
     # config.vm.synced_folder "source", "C:/dest"
 
-    config.vm.provision "file", source: "powershell.lnk", destination: "C:/Users/IEUser/Desktop/Windows PowerShell.lnk"
-    config.vm.provision "file", source: "provision.ps1", destination: "C:/Users/IEUser/Desktop/RUN AS ADMIN.ps1"
+    Dir.glob("run_once/*.ps1").sort.each do |script|
+        config.vm.provision "shell", path: script, name: script
+    end
+
+    Dir.glob("run_always/*.ps1").sort.each do |script|
+        config.vm.provision "shell", path: script, name: script, run: "always"
+    end
 
 end
