@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.post_up_message = <<~MSG
         - Just provisioned? `vagrant reload` recommended
-        - Username: vagrant Password: vagrant
+        - Username/Password: vagrant/vagrant
     MSG
 
 end

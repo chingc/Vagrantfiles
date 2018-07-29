@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 
     config.ssh.username = "IEUser"
     config.ssh.password = "Passw0rd!"
-    config.ssh.extra_args = "powershell"
+    config.ssh.extra_args = "cmd"  # cmd or powershell
 
     config.vm.provider "virtualbox" do |vbox|
         vbox.gui = true
@@ -42,9 +42,8 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.post_up_message = <<~MSG
-        - Resolution too low? `VBoxManage controlvm "#{Settings::NAME}" setvideomodehint 1440 900 32`
         - Just provisioned? `vagrant reload` recommended
-        - Username: IEUser Password: Passw0rd!
+        - Username/Password: IEUser/Passw0rd!
     MSG
 
 end

@@ -33,7 +33,7 @@ module Settings
         ["--audiocontroller", "hda"],
         ["--clipboard", "bidirectional"],
         ["--draganddrop", "bidirectional"],
-        ["--macaddress1", "auto"]  # randomize mac address every boot
+        # ["--macaddress1", "auto"]  # randomize mac address every `vagrant up`
     ]
 
     # many of the parameters for vmware fusion are undocumented so you'll need to look in the .vmx file and experiment
